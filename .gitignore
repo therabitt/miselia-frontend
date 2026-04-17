@@ -1,0 +1,62 @@
+# ═════════════════════════════════════════════════════════════════════════════
+# File    : .gitignore
+# Desc    : Frontend gitignore — Next.js/TypeScript/pnpm.
+# Step    : STEP 10 — Frontend: Struktur Direktori & Setup
+# Ref     : Blueprint Appendix J.2
+# ═════════════════════════════════════════════════════════════════════════════
+
+# Dependencies
+node_modules/
+/.pnp
+.pnp.js
+
+# pnpm
+.pnpm-debug.log*
+
+# Next.js build output
+/.next/
+/out/
+/build
+
+# Production
+/dist
+
+# Debug logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment variables — JANGAN commit .env.local ke git
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+# Yang BOLEH di-commit:
+# .env.example
+
+# Vercel
+.vercel
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
+
+# Testing
+/coverage
+/.nyc_output
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# Storybook
+/storybook-static
+
+# Misc
+*.pem
+.cache/

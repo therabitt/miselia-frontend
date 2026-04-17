@@ -1,0 +1,302 @@
+/* ═════════════════════════════════════════════════════════════════════════════
+   File    : app/globals.css
+   Desc    : Global CSS — Tailwind directives + Miselia Design System tokens.
+             Midnight Scholar palette (Blueprint STEP 1 confirmed):
+               Dashboard (F — Refined Professional): navy + teal
+               Landing   (E — Editorial Academic):   warm parchment + gold
+             4-font system: Baskervville / Crimson Text / EB Garamond / Inter
+   Step    : STEP 10 — Frontend: Struktur Direktori & Setup
+   Ref     : Blueprint §2.3, STEP 1 design decisions
+   ═════════════════════════════════════════════════════════════════════════════ */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ═════════════════════════════════════════════════════════════════════════════
+   LAYER: BASE — CSS Variables (shadcn/ui convention — HSL without hsl())
+   ═════════════════════════════════════════════════════════════════════════════ */
+
+@layer base {
+
+  /* ── Light Mode — Dashboard (Midnight Scholar) ────────────────────────── */
+  :root {
+    /* Core surfaces */
+    --background:         0 0% 100%;           /* #FFFFFF */
+    --foreground:         222 47% 11%;          /* #0F172A */
+
+    /* Card */
+    --card:               0 0% 100%;
+    --card-foreground:    222 47% 11%;
+
+    /* Popover */
+    --popover:            0 0% 100%;
+    --popover-foreground: 222 47% 11%;
+
+    /* Primary — Navy #1B2A4A */
+    --primary:            217 47% 19%;
+    --primary-foreground: 0 0% 100%;
+
+    /* Secondary — light slate */
+    --secondary:          210 40% 96%;          /* #F1F5F9 */
+    --secondary-foreground: 222 47% 11%;
+
+    /* Muted */
+    --muted:              210 40% 96%;          /* #F1F5F9 */
+    --muted-foreground:   215 16% 47%;          /* #64748B */
+
+    /* Accent — Teal #14B8A6 */
+    --accent:             174 79% 40%;
+    --accent-foreground:  166 76% 97%;          /* #F0FDFA */
+
+    /* Destructive */
+    --destructive:        0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
+
+    /* Border & Input */
+    --border:             214 32% 91%;          /* #E2E8F0 */
+    --input:              214 32% 91%;
+    --ring:               174 79% 40%;          /* teal ring */
+
+    /* Border radius base */
+    --radius:             0.5rem;
+
+    /* ── Sidebar dark (always dark regardless of light/dark mode) ──────── */
+    --sidebar-background:         240 10% 11%;  /* #18181B */
+    --sidebar-foreground:         210 40% 96%;  /* #F1F5F9 */
+    --sidebar-primary:            217 47% 19%;  /* navy active item bg */
+    --sidebar-primary-foreground: 210 40% 96%;
+    --sidebar-accent:             240 6% 17%;   /* #27272A — hover */
+    --sidebar-accent-foreground:  210 40% 96%;
+    --sidebar-border:             240 6% 20%;   /* subtle border */
+    --sidebar-ring:               174 79% 40%;  /* teal */
+
+    /* ── Landing (Warm Editorial — E style) ────────────────────────────── */
+    --landing-background:         30 33% 97%;   /* #FAF7F2 parchment */
+    --landing-background-2:       30 43% 93%;   /* #F3EDE4 */
+    --landing-foreground:         217 47% 19%;  /* navy */
+    --landing-warm-accent:        38 49% 61%;   /* #C9A96E gold */
+    --landing-muted:              30 24% 44%;   /* #8B7355 */
+    --landing-border:             33 25% 82%;   /* #DDD4C4 */
+    --landing-card:               0 0% 100%;
+
+    /* ── Font variables — populated by layout.tsx (STEP 11) ──────────── */
+    /* next/font/google inject these via html className */
+    --font-sans:         'Inter', system-ui, sans-serif;
+    --font-baskervville: 'Baskervville', Georgia, serif;
+    --font-crimson:      'Crimson Text', Georgia, serif;
+    --font-garamond:     'EB Garamond', Georgia, serif;
+    --font-mono:         'JetBrains Mono', 'Fira Code', monospace;
+
+    /* ── Status colors ──────────────────────────────────────────────────── */
+    --status-completed:  142 71% 45%;   /* green */
+    --status-running:    217 91% 60%;   /* blue */
+    --status-failed:     0 84% 60%;     /* red */
+    --status-queued:     43 96% 56%;    /* amber */
+    --status-stale:      38 92% 50%;    /* orange — staleness badge ⚠️ */
+  }
+
+  /* ── Dark Mode — Midnight Scholar deep navy ───────────────────────────── */
+  .dark {
+    --background:         217 57% 12%;  /* #0D1B2E deep navy */
+    --foreground:         210 40% 96%;  /* #F1F5F9 */
+
+    --card:               217 47% 19%;  /* #1B2A4A */
+    --card-foreground:    210 40% 96%;
+
+    --popover:            217 47% 19%;
+    --popover-foreground: 210 40% 96%;
+
+    --primary:            174 79% 40%;  /* teal becomes primary in dark */
+    --primary-foreground: 217 57% 12%;
+
+    --secondary:          217 38% 24%;  /* #243655 */
+    --secondary-foreground: 210 40% 96%;
+
+    --muted:              217 38% 24%;
+    --muted-foreground:   215 20% 65%;
+
+    --accent:             174 79% 40%;
+    --accent-foreground:  166 76% 97%;
+
+    --destructive:        0 72% 51%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border:             217 38% 24%;  /* #243655 */
+    --input:              217 38% 24%;
+    --ring:               168 73% 63%;  /* #5EEAD4 lighter teal */
+
+    /* Sidebar stays same in dark mode */
+    --sidebar-background:         240 10% 11%;
+    --sidebar-foreground:         210 40% 96%;
+    --sidebar-primary:            217 38% 24%;
+    --sidebar-primary-foreground: 210 40% 96%;
+    --sidebar-accent:             240 6% 17%;
+    --sidebar-accent-foreground:  210 40% 96%;
+    --sidebar-border:             240 6% 20%;
+    --sidebar-ring:               168 73% 63%;
+  }
+
+  /* ── Base HTML resets ─────────────────────────────────────────────────── */
+  * {
+    @apply border-border;
+  }
+
+  html {
+    @apply antialiased;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: var(--font-sans);
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+
+  /* ── Academic content typography ──────────────────────────────────────── */
+  /* Digunakan dalam pipeline output pages */
+  .academic-content {
+    font-family: var(--font-crimson);
+    font-size: 1rem;
+    line-height: 1.8;
+    color: hsl(var(--foreground));
+  }
+
+  .academic-content h1,
+  .academic-content h2,
+  .academic-content h3 {
+    font-family: var(--font-crimson);
+    font-weight: 600;
+  }
+
+  /* Quote style — EB Garamond italic */
+  .academic-content blockquote,
+  .academic-quote {
+    font-family: var(--font-garamond);
+    font-style: italic;
+    font-size: 1.0625rem;
+    border-left: 2px solid hsl(var(--landing-warm-accent));
+    padding-left: 1rem;
+    color: hsl(var(--muted-foreground));
+  }
+
+  /* Terminology highlight */
+  .academic-term {
+    font-family: var(--font-garamond);
+    font-style: italic;
+    color: hsl(var(--accent));
+  }
+
+  /* Numerical data — Inter medium */
+  .data-label {
+    font-family: var(--font-sans);
+    font-weight: 500;
+    font-size: 0.875rem;
+    letter-spacing: 0.02em;
+  }
+
+  /* Label/button — Inter bold uppercase */
+  .label-caps {
+    font-family: var(--font-sans);
+    font-weight: 700;
+    font-size: 0.75rem;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+  }
+
+  /* ── Landing page typography ──────────────────────────────────────────── */
+  .landing-hero {
+    font-family: var(--font-baskervville);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+
+  .landing-body {
+    font-family: var(--font-crimson);
+    font-size: 1.0625rem;
+    line-height: 1.75;
+  }
+
+  /* ── Scrollbar styling ────────────────────────────────────────────────── */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: hsl(var(--border));
+    border-radius: 3px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--muted-foreground));
+  }
+}
+
+/* ═════════════════════════════════════════════════════════════════════════════
+   LAYER: COMPONENTS — Reusable utility classes
+   ═════════════════════════════════════════════════════════════════════════════ */
+
+@layer components {
+  /* Stage card status badges — Blueprint Decision #22 */
+  .badge-completed {
+    @apply bg-green-50 text-green-700 border border-green-200;
+  }
+  .badge-running {
+    @apply bg-blue-50 text-blue-700 border border-blue-200;
+  }
+  .badge-failed {
+    @apply bg-red-50 text-red-700 border border-red-200;
+  }
+  .badge-queued {
+    @apply bg-amber-50 text-amber-700 border border-amber-200;
+  }
+  .badge-stale {
+    @apply bg-orange-50 text-orange-700 border border-orange-200;
+  }
+
+  /* Pipeline tier badge */
+  .badge-free {
+    @apply bg-slate-100 text-slate-600 border border-slate-200;
+  }
+  .badge-sarjana {
+    @apply bg-teal-50 text-teal-700 border border-teal-200;
+  }
+  .badge-magister {
+    @apply bg-navy-50 text-navy-700 border border-navy-200;
+  }
+  .badge-institutional {
+    @apply bg-parchment-200 text-parchment-800 border border-parchment-300;
+  }
+
+  /* Sidebar nav item */
+  .sidebar-nav-item {
+    @apply flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors;
+    @apply text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent;
+  }
+
+  .sidebar-nav-item.active {
+    @apply bg-sidebar-accent text-sidebar-foreground font-medium;
+  }
+}
+
+/* ═════════════════════════════════════════════════════════════════════════════
+   LAYER: UTILITIES
+   ═════════════════════════════════════════════════════════════════════════════ */
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  /* Container untuk pipeline output — max width readable */
+  .prose-academic {
+    max-width: 72ch;
+  }
+}
