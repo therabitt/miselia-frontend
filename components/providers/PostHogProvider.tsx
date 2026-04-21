@@ -11,7 +11,7 @@
 
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, Suspense } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 import { initPostHog, trackPageView } from "@/lib/posthog";
 
@@ -19,16 +19,15 @@ interface PostHogProviderProps {
   children: React.ReactNode;
 }
 
-export function PostHogProvider({ children }: PostHogProviderProps) {
+/**
+ * Separate tracker component to safely use useSearchParams() 
+ * which requires a Suspense boundary during static pre-rendering.
+ * Ref: https://nextjs.org/docs/messages/missing-suspense-with-csr-bailout
+ */
+function PostHogPageviewTracker() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  // Init PostHog sekali saat mount
-  useEffect(() => {
-    initPostHog();
-  }, []);
-
-  // Track pageview setiap route change
   useEffect(() => {
     if (pathname) {
       const url =
@@ -38,5 +37,21 @@ export function PostHogProvider({ children }: PostHogProviderProps) {
     }
   }, [pathname, searchParams]);
 
-  return <>{children}</>;
+  return null;
+}
+
+export function PostHogProvider({ children }: PostHogProviderProps) {
+  // Init PostHog sekali saat mount
+  useEffect(() => {
+    initPostHog();
+  }, []);
+
+  return (
+    <>
+      <Suspense fallback={null}>
+        <PostHogPageviewTracker />
+      </Suspense>
+      {children}
+    </>
+  );
 }
