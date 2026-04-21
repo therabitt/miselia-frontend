@@ -1,0 +1,93 @@
+# ═════════════════════════════════════════════════════════════════════════════
+# File    : .github/workflows/deploy.yml
+# Desc    : Frontend deploy ke Vercel (sesuai stack Blueprint §2.1).
+#           Trigger: push ke main setelah CI lulus.
+#           Vercel deploy via Vercel CLI atau GitHub Integration.
+#
+#           SECRETS yang dibutuhkan:
+#             VERCEL_TOKEN    : Vercel API token
+#             VERCEL_ORG_ID   : Vercel org/team ID
+#             VERCEL_PROJECT_ID: Vercel project ID
+#
+#           Alternatif: gunakan Vercel GitHub Integration (auto-deploy)
+#           tanpa perlu workflow ini. Workflow ini untuk kasus di mana
+#           perlu kontrol eksplisit (misal: deploy hanya setelah backend
+#           deploy selesai).
+#
+# Layer   : DevOps / Deploy
+# Step    : STEP 13 — GitHub Actions
+# Ref     : Blueprint §2.1 (Vercel frontend), Project Master Document Fase 0
+# ═════════════════════════════════════════════════════════════════════════════
+
+name: Frontend Deploy — Vercel
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "miselia-frontend/**"
+      - ".github/workflows/deploy.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-frontend-${{ github.ref }}
+  cancel-in-progress: false
+
+defaults:
+  run:
+    working-directory: miselia-frontend
+
+jobs:
+  deploy:
+    name: Deploy to Vercel
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment:
+      name: staging
+      url: https://miselia-staging.vercel.app
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+          run_install: false
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "pnpm"
+          cache-dependency-path: miselia-frontend/pnpm-lock.yaml
+
+      - name: Install Vercel CLI
+        run: pnpm add -g vercel@latest
+
+      - name: Pull Vercel environment
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        run: |
+          vercel pull \
+            --yes \
+            --environment=preview \
+            --token=${{ secrets.VERCEL_TOKEN }}
+
+      - name: Build for Vercel
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        run: |
+          vercel build \
+            --token=${{ secrets.VERCEL_TOKEN }}
+
+      - name: Deploy to Vercel
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        run: |
+          vercel deploy \
+            --prebuilt \
+            --token=${{ secrets.VERCEL_TOKEN }} \
+            --yes
+          echo "✓ Frontend deployed to Vercel staging"

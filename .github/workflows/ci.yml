@@ -1,0 +1,112 @@
+# ═════════════════════════════════════════════════════════════════════════════
+# File    : .github/workflows/ci.yml
+# Desc    : Frontend CI pipeline — TypeScript check, ESLint, Next.js build.
+#           Trigger: push/PR ke branch main dan staging.
+#           Node.js: 20 LTS, package manager: pnpm@9.
+# Layer   : DevOps / CI
+# Step    : STEP 13 — GitHub Actions
+# Ref     : Project Master Document Fase 0
+# ═════════════════════════════════════════════════════════════════════════════
+
+name: Frontend CI
+
+on:
+  push:
+    branches: [main, staging]
+    paths:
+      - "miselia-frontend/**"
+      - ".github/workflows/ci.yml"
+  pull_request:
+    branches: [main, staging]
+    paths:
+      - "miselia-frontend/**"
+      - ".github/workflows/ci.yml"
+
+defaults:
+  run:
+    working-directory: miselia-frontend
+
+jobs:
+  # ── Job 1: Type Check + Lint ──────────────────────────────────────────────
+  typecheck-lint:
+    name: TypeScript & ESLint
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+          run_install: false
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "pnpm"
+          cache-dependency-path: miselia-frontend/pnpm-lock.yaml
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: TypeScript check
+        run: pnpm exec tsc --noEmit
+        # strict: true dari tsconfig.json — semua type error akan fail CI
+
+      - name: ESLint
+        run: pnpm exec next lint
+        # next lint menggunakan config dari .eslintrc atau eslint.config di package.json
+
+  # ── Job 2: Build ──────────────────────────────────────────────────────────
+  build:
+    name: Next.js Build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    needs: typecheck-lint
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+          run_install: false
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "pnpm"
+          cache-dependency-path: miselia-frontend/pnpm-lock.yaml
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build Next.js
+        env:
+          # Mock env vars agar build tidak gagal karena missing env
+          # Nilai tidak penting — hanya untuk build time check
+          NEXT_PUBLIC_SUPABASE_URL: https://mock.supabase.co
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: mock-anon-key
+          NEXT_PUBLIC_API_URL: http://localhost:8000
+          NEXT_PUBLIC_POSTHOG_KEY: phc_mock
+          NEXT_PUBLIC_POSTHOG_HOST: https://eu.posthog.com
+          NEXT_PUBLIC_APP_URL: http://localhost:3000
+          # Disable Sentry source map upload di CI (tidak perlu SENTRY_AUTH_TOKEN)
+          SENTRY_UPLOAD_SOURCEMAPS: "false"
+        run: pnpm build
+        # Jika build gagal → type error, import error, atau konfigurasi rusak
+
+      - name: Upload build artifact (optional)
+        uses: actions/upload-artifact@v4
+        with:
+          name: nextjs-build
+          path: miselia-frontend/.next/
+          retention-days: 1
+          if-no-files-found: ignore
