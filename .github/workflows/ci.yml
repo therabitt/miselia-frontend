@@ -14,17 +14,13 @@ on:
   push:
     branches: [main, staging]
     paths:
-      - "miselia-frontend/**"
+      - "**"
       - ".github/workflows/ci.yml"
   pull_request:
     branches: [main, staging]
     paths:
-      - "miselia-frontend/**"
+      - "**"
       - ".github/workflows/ci.yml"
-
-defaults:
-  run:
-    working-directory: miselia-frontend
 
 jobs:
   # ── Job 1: Type Check + Lint ──────────────────────────────────────────────
@@ -47,7 +43,7 @@ jobs:
         with:
           node-version: "20"
           cache: "pnpm"
-          cache-dependency-path: miselia-frontend/pnpm-lock.yaml
+          cache-dependency-path: pnpm-lock.yaml
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -82,7 +78,7 @@ jobs:
         with:
           node-version: "20"
           cache: "pnpm"
-          cache-dependency-path: miselia-frontend/pnpm-lock.yaml
+          cache-dependency-path: pnpm-lock.yaml
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -106,6 +102,6 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: nextjs-build
-          path: miselia-frontend/.next/
+          path: .next/
           retention-days: 1
           if-no-files-found: ignore

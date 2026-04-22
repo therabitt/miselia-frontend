@@ -25,17 +25,13 @@ on:
   push:
     branches: [main]
     paths:
-      - "miselia-frontend/**"
+      - "**"
       - ".github/workflows/deploy.yml"
   workflow_dispatch:
 
 concurrency:
   group: deploy-frontend-${{ github.ref }}
   cancel-in-progress: false
-
-defaults:
-  run:
-    working-directory: miselia-frontend
 
 jobs:
   deploy:
@@ -60,7 +56,7 @@ jobs:
         with:
           node-version: "20"
           cache: "pnpm"
-          cache-dependency-path: miselia-frontend/pnpm-lock.yaml
+          cache-dependency-path: pnpm-lock.yaml
 
       - name: Install Vercel CLI
         run: pnpm add -g vercel@latest
